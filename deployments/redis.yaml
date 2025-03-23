@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-dev
+  labels:
+    app: redis-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis-dev
+  template:
+    metadata:
+      name: redis-dev
+      labels:
+        app: redis-dev
+    spec:
+      containers:
+        - name: redis-dev
+          image: redis:6.2.6-alpine
+          command: [ "/bin/sh", -c, redis-server /usr/local/etc/redis/redis.conf ]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /usr/local/etc/redis/redis.conf
+              name: redis-config
+      restartPolicy: Always
+      volumes:
+        - name: redis-config
+          hostPath:
+            path: /Users/black/dev/redis
+            type: DirectoryOrCreate
+      
