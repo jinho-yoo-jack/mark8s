@@ -18,7 +18,7 @@ spec:
       containers:
         - name: redis-dev
           image: redis:6.2.6-alpine
-          command: [ "/bin/sh", -c, redis-server /usr/local/etc/redis/redis.conf ]
+          command: ["/bin/sh", "-c", "redis-server /usr/local/etc/redis/redis.conf"]
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
@@ -26,10 +26,10 @@ spec:
           volumeMounts:
             - mountPath: /usr/local/etc/redis/redis.conf
               name: redis-config
+              subPath: redis.conf  # 해당 파일만 마운트되도록 수정
       restartPolicy: Always
       volumes:
         - name: redis-config
           hostPath:
             path: /Users/black/dev/redis
             type: DirectoryOrCreate
-      
