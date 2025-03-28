@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-dev
+  labels:
+    app: mysql-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql-dev
+  template:
+    metadata:
+      name: mysql-dev
+      labels:
+        app: mysql-dev
+    spec:
+      containers:
+        - name: mysql-dev
+          image: mysql:8.0.33
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: schema-init
+      restartPolicy: Always
+      volumes:
+        - name: schema-init
+          hostPath:
+            path: /Users/jinho/dev/mark77/src/main/resources/initdb/prod-db-schema.sql
+            type: DirectoryOrCreate
