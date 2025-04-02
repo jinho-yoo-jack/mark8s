@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-dev
+spec:
+  serviceName: mysql-dev  # Headless Service와 연결
+  replicas: 3  # MySQL 복제본 3개 생성
+  selector:
+    matchLabels:
+      app: mysql-dev
+  template:
+    metadata:
+      labels:
+        app: mysql-dev
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "mypassword"
+          volumeMounts:
+            - name: mysql-dev-data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-dev-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
